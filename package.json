@@ -13,6 +13,9 @@
     "midway",
     "locate"
   ],
+  "files": [
+    "dist"
+  ],
   "author": "Harry Chen <czy88840616@gmail.com>",
   "license": "MIT",
   "devDependencies": {
