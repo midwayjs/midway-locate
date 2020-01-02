@@ -1,0 +1,12 @@
+{
+  "name": "egg-base",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.2",
+    "midway-bin": "1"
+  },
+  "dependencies": {
+    "egg": "*"
+  }
+}

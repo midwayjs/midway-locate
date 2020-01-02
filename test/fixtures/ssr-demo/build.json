@@ -1,0 +1,22 @@
+{
+  "plugins": [
+    [
+      "build-plugin-rax-app",
+      {
+        "targets": [
+          "web"
+        ]
+      }
+    ],
+    "build-plugin-rax-ssr",
+    "@ali/build-plugin-rax-app-def",
+    [
+      "@ali/build-plugin-rax-faas",
+      {
+        "service": "firstfaas3",
+        "runtime": "nodejs10",
+        "provider": "ginkgo"
+      }
+    ]
+  ]
+}
