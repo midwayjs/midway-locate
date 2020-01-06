@@ -1,5 +1,0 @@
-{
-  "version": "1.0.1",
-  "type": "builder",
-  "builder": "@ali/builder-ice-scripts"
-}

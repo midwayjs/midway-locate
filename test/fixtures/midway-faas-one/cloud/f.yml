@@ -17,19 +17,3 @@ functions:
     handler: post.handler
     events:
       - hsf: true
-    layers:
-      - remote-debug
-      - ew-layer
-
-layers:
-  remote-debug:
-    path: oss:remote-debug-layer@latest
-  ew-layer:
-    path: oss:@ali/ew-layer@latest
-
-apiGateway:
-  type: general-http
-
-resources:
-  services:
-    - 'tb_StrategyInfoServiceGetStrategies'
