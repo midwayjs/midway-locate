@@ -21,11 +21,12 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.2",
-    "midway-bin": "1"
+    "midway-bin": "1",
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
-    "typescript": "^3.7.4"
+    "konan": "^1.2.1"
   }
 }

@@ -1,7 +1,14 @@
 import * as globby from 'globby';
-import { safeReadJSON, propertyExists, safeGetProperty } from './util';
+import {
+  safeReadJSON,
+  propertyExists,
+  safeGetProperty,
+  filterModule,
+} from './util';
 import { dirname, join, relative } from 'path';
 import { find } from './common-path';
+import * as konan from 'konan';
+import { readFileSync } from 'fs';
 
 export class Locator {
   cwd;
@@ -9,6 +16,7 @@ export class Locator {
   tsCodeRoot;
   tsBuildRoot;
   tsConfigFilePath;
+  usingDependencies;
 
   constructor(cwd) {
     this.cwd = cwd || this.analyzeCWD();
@@ -18,12 +26,14 @@ export class Locator {
     await this.analyzeRoot();
     await this.analyzeTSCodeRoot();
     await this.analyzeTSBuildRoot();
+    await this.analyzeUsingDependencies();
     return {
       cwd: this.cwd,
       midwayRoot: this.root,
       tsCodeRoot: this.tsCodeRoot,
       tsConfigFilePath: this.tsConfigFilePath,
       tsBuildRoot: this.tsBuildRoot,
+      usingDependencies: this.usingDependencies,
     };
   }
 
@@ -106,6 +116,28 @@ export class Locator {
           this.tsBuildRoot = join(dirname(this.tsConfigFilePath), distDir);
         }
       }
+    }
+  }
+
+  private async analyzeUsingDependencies() {
+    if (!this.root || !this.tsCodeRoot) return;
+    const dependencies: Set<string> = new Set();
+    const paths: string[] = await globby(['**/*.ts', '**/*.js', '!**/*.d.ts'], {
+      cwd: this.tsCodeRoot,
+    });
+
+    for (const p of paths) {
+      console.log(join(this.tsCodeRoot, p));
+
+      const result = konan(
+        readFileSync(join(this.tsCodeRoot, p), 'utf-8').toString()
+      );
+
+      result.strings.forEach(module => {
+        filterModule(module, dependencies);
+      });
+
+      this.usingDependencies = Array.from(dependencies.values());
     }
   }
 }

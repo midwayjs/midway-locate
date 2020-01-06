@@ -1,4 +1,5 @@
 import { func, provide } from '@midwayjs/faas';
+import * as p from './p/a';
 
 @provide()
 @func('index.handler')

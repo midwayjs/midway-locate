@@ -27,7 +27,7 @@ describe('/test/index.test.ts', () => {
     );
     assert(result.tsBuildRoot === join(__dirname, 'fixtures/midway-base/dist'));
   });
-  it('locate in midway+antd project', async () => {
+  it.only('locate in midway+antd project', async () => {
     const locator = new Locator(join(__dirname, 'fixtures/midway-all'));
     const result = await locator.run();
     assert(result.cwd === join(__dirname, 'fixtures/midway-all'));
@@ -54,6 +54,10 @@ describe('/test/index.test.ts', () => {
         join(__dirname, 'fixtures/rax-fc/tsconfig.json')
     );
     assert(result.tsBuildRoot === join(__dirname, 'fixtures/rax-fc/dist'));
+    assert(
+      JSON.stringify(result.usingDependencies) ===
+        JSON.stringify(['@midwayjs/faas', '@midwayjs/abc', 'abc'])
+    );
   });
 
   it('locate in rax+faas with inner tsconfig project', async () => {
