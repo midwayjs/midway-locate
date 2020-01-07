@@ -1,4 +1,3 @@
-import * as dt from 'detective-typescript';
 import { readFileSync } from 'fs';
 import * as globby from 'globby';
 import { dirname, join, relative } from 'path';
@@ -8,6 +7,7 @@ import {
   propertyExists,
   safeGetProperty,
   filterModule,
+  findDependenciesByAST,
 } from './util';
 
 export class Locator {
@@ -127,13 +127,8 @@ export class Locator {
     });
 
     for (const p of paths) {
-      console.log(join(this.tsCodeRoot, p));
-
-      const result: string[] = dt(
-        readFileSync(join(this.tsCodeRoot, p), 'utf-8').toString(),
-        {
-          mixedImports: true,
-        }
+      const result: string[] = findDependenciesByAST(
+        readFileSync(join(this.tsCodeRoot, p), 'utf-8')
       );
 
       result.forEach(module => {
