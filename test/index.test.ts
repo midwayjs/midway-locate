@@ -56,7 +56,18 @@ describe('/test/index.test.ts', () => {
     assert(result.tsBuildRoot === join(__dirname, 'fixtures/rax-fc/dist'));
     assert(
       JSON.stringify(result.usingDependencies) ===
-        JSON.stringify(['@midwayjs/faas', '@midwayjs/abc', 'abc'])
+        JSON.stringify([
+          '@midwayjs/faas',
+          '@midwayjs/abc',
+          'abc',
+          'foo',
+          'vue',
+          'wow',
+          'all',
+          'baby',
+          '@midway/fake',
+          '@midwayjs/test-module',
+        ])
     );
   });
 

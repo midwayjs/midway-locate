@@ -1,14 +1,14 @@
+import * as dt from 'detective-typescript';
+import { readFileSync } from 'fs';
 import * as globby from 'globby';
+import { dirname, join, relative } from 'path';
+import { find } from './common-path';
 import {
   safeReadJSON,
   propertyExists,
   safeGetProperty,
   filterModule,
 } from './util';
-import { dirname, join, relative } from 'path';
-import { find } from './common-path';
-import * as konan from 'konan';
-import { readFileSync } from 'fs';
 
 export class Locator {
   cwd;
@@ -129,15 +129,17 @@ export class Locator {
     for (const p of paths) {
       console.log(join(this.tsCodeRoot, p));
 
-      const result = konan(
-        readFileSync(join(this.tsCodeRoot, p), 'utf-8').toString()
+      const result: string[] = dt(
+        readFileSync(join(this.tsCodeRoot, p), 'utf-8').toString(),
+        {
+          mixedImports: true,
+        }
       );
 
-      result.strings.forEach(module => {
+      result.forEach(module => {
         filterModule(module, dependencies);
       });
-
-      this.usingDependencies = Array.from(dependencies.values());
     }
+    this.usingDependencies = Array.from(dependencies.values());
   }
 }
