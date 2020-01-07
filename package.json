@@ -25,6 +25,9 @@
     "typescript": "^3.7.4"
   },
   "dependencies": {
+    "@babel/parser": "^7.7.7",
+    "@babel/traverse": "^7.7.4",
+    "babylon": "^6.18.0",
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
     "konan": "^1.2.1"

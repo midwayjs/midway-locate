@@ -127,10 +127,10 @@ export class Locator {
     });
 
     for (const p of paths) {
-      console.log(join(this.tsCodeRoot, p));
+      // console.log(join(this.tsCodeRoot, p));
 
       const result = konan(
-        readFileSync(join(this.tsCodeRoot, p), 'utf-8').toString()
+        readFileSync(join(this.tsCodeRoot, p), 'utf-8')
       );
 
       result.strings.forEach(module => {

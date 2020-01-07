@@ -27,7 +27,7 @@ describe('/test/index.test.ts', () => {
     );
     assert(result.tsBuildRoot === join(__dirname, 'fixtures/midway-base/dist'));
   });
-  it.only('locate in midway+antd project', async () => {
+  it('locate in midway+antd project', async () => {
     const locator = new Locator(join(__dirname, 'fixtures/midway-all'));
     const result = await locator.run();
     assert(result.cwd === join(__dirname, 'fixtures/midway-all'));
