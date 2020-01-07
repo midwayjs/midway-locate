@@ -29,11 +29,11 @@ export const safeGetProperty = (json: object, property: string | string[]) => {
 
   const currentProperty = (properties as string[]).shift();
 
-  if (properties.length > 0 && typeof json[ currentProperty ] === 'object') {
-    return safeGetProperty(json[ currentProperty ], properties);
+  if (properties.length > 0 && typeof json[currentProperty] === 'object') {
+    return safeGetProperty(json[currentProperty], properties);
   }
 
-  return json[ currentProperty ];
+  return json[currentProperty];
 };
 
 export const propertyExists = (json: object, properties: string[]): boolean => {
@@ -100,13 +100,13 @@ export const filterModule = (module: string, modules: Set<string>) => {
     // @midwayjs/abc/bbb
     if (module.match(/\//g)?.length >= 2) {
       const result = module.split('/');
-      module = result[ 0 ] + '/' + result[ 1 ];
+      module = result[0] + '/' + result[1];
     }
   } else {
     // abc/bbb
     if (module.match(/\//g)?.length >= 1) {
       const result = module.split('/');
-      module = result[ 0 ];
+      module = result[0];
     }
   }
 
@@ -116,8 +116,8 @@ export const filterModule = (module: string, modules: Set<string>) => {
 export const findDependencies = src => {
   const dep = [];
   src.replace(/(import .+ )?(from|require)\s?['"(](.+)['")]/g, (...args) => {
-    dep.push(args[ 3 ]);
-    return args[ 3 ];
+    dep.push(args[3]);
+    return args[3];
   });
   return dep;
 };
@@ -125,5 +125,6 @@ export const findDependencies = src => {
 export const findDependenciesByAST = src => {
   return dt(src, {
     mixedImports: true,
+    jsx: true,
   });
 };
