@@ -7,10 +7,6 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.5"
   },
-  "devDependencies": {
-    "@ali/faas-fun": "^2.10.16",
-    "@ali/ew-layer": "^1.0.0"
-  },
   "scripts": {
     "sync": "f sync",
     "fdev": "f dev"
