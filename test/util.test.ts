@@ -1,6 +1,12 @@
-import { safeReadJSON, safeGetProperty } from '../src/util';
+import {
+  findDependenciesByAST as detective,
+  safeGetProperty,
+  safeReadJSON,
+} from '../src/util';
 import { join } from 'path';
 import * as assert from 'assert';
+import { deepEqual } from 'assert';
+import { readFileSync } from 'fs';
 
 describe('/test/util.test.ts', () => {
   it('test safe require object', async () => {
@@ -37,5 +43,76 @@ describe('/test/util.test.ts', () => {
     assert(data === null);
     data = safeGetProperty(json, 'b.e.f');
     assert(data[0] === 'b');
+  });
+
+  describe('detective case', () => {
+    describe('konan case', () => {
+      const input = readFileSync(
+        join(__dirname, './fixtures/detective_case/fixture.js'),
+        'utf8'
+      );
+
+      it('all', () => {
+        deepEqual(detective(input), [
+          'foo',
+          'vue/dist/vue',
+          'wow',
+          'baby',
+          './async-module',
+        ]);
+      });
+
+      it('dynamical require', () => {
+        deepEqual(
+          detective(`
+      require(path.resolve('./'))
+      require('bar')
+    `),
+          ['bar']
+        );
+      });
+
+      it('only consider require as function', () => {
+        deepEqual(
+          detective(`
+      require('foo')
+      var a = {
+        require: 'bar'
+      }
+    `),
+          ['foo']
+        );
+      });
+
+      it('import *', () => {
+        deepEqual(
+          detective(`import * as m from 'm';var foo = {import: 'mm'}`),
+          ['m']
+        );
+      });
+
+      it('export', () => {
+        const input = readFileSync(
+          join(__dirname, './fixtures/detective_case/fixture-export.js'),
+          'utf8'
+        );
+        deepEqual(detective(input), [
+          './util',
+          './temporary',
+          './persistent',
+          'all',
+        ]);
+      });
+    });
+
+    describe('custom case', () => {
+      it('should analyze ts file', () => {
+        const input = readFileSync(
+          join(__dirname, './fixtures/detective_case/fixture.ts'),
+          'utf8'
+        );
+        deepEqual(detective(input), ['midway']);
+      });
+    });
   });
 });

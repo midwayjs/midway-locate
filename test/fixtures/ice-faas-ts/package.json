@@ -1,0 +1,41 @@
+{
+  "name": "@icedesign/ts-scaffold9ade4c90-5de3-11e9-aef1-79dc0073b61f",
+  "version": "1.0.3",
+  "description": "该模板基于 TypeScript 适用于从 0 到 1 开始搭建项目，内置基础的页面，路由和菜单展示",
+  "dependencies": {
+    "@ali/midway-faas": "^2.10.14",
+    "@alifd/next": "^1.x",
+    "@icedesign/theme": "^1.x",
+    "@types/react": "^16.8.3",
+    "@types/react-dom": "^16.8.2",
+    "moment": "^2.23.0",
+    "prop-types": "^15.5.8",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^4.2.2",
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "@ali/ice-plugin-def": "^0.1.7-1",
+    "@alib/build-scripts": "^0.1.11",
+    "@midwayjs/fcli-command-core": "^0.2.2",
+    "@midwayjs/fcli-plugin-package": "^0.2.2",
+    "babel-eslint": "^8.0.3",
+    "build-plugin-fusion": "^0.1.0",
+    "build-plugin-ice-app": "^0.1.9",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1"
+  },
+  "scripts": {
+    "start": "build-scripts start",
+    "build": "build-scripts build",
+    "lint": "eslint . --ext '.js,.jsx' --fix"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

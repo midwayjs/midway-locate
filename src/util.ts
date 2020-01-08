@@ -1,4 +1,5 @@
 import * as fse from 'fs-extra';
+import * as dt from 'detective-typescript';
 
 export const exists = async (file: string) => {
   return fse.pathExists(file);
@@ -43,4 +44,87 @@ export const propertyExists = (json: object, properties: string[]): boolean => {
     }
   }
   return false;
+};
+
+const nativeModule = [
+  'assert',
+  'async_hooks',
+  'buffer',
+  'child_process',
+  'cluster',
+  'crypto',
+  'dgram',
+  'dns',
+  'domain',
+  'events',
+  'fs',
+  'http',
+  'http2',
+  'https',
+  'inspector',
+  'module',
+  'net',
+  'os',
+  'path',
+  'perf_hooks',
+  'process',
+  'punycode',
+  'querystring',
+  'readline',
+  'repl',
+  'stream',
+  'string_decoder',
+  'sys',
+  'timers',
+  'tls',
+  'trace_events',
+  'tty',
+  'url',
+  'util',
+  'v8',
+  'vm',
+  'wasi',
+  'worker_threads',
+  'zlib',
+  'config',
+];
+
+export const filterModule = (module: string, modules: Set<string>) => {
+  // remove local module
+  if (/^\./.test(module)) return;
+
+  // filter native module
+  if (nativeModule.indexOf(module) !== -1) return;
+
+  if (/^@/.test(module)) {
+    // @midwayjs/abc/bbb
+    if (module.match(/\//g)?.length >= 2) {
+      const result = module.split('/');
+      module = result[0] + '/' + result[1];
+    }
+  } else {
+    // abc/bbb
+    if (module.match(/\//g)?.length >= 1) {
+      const result = module.split('/');
+      module = result[0];
+    }
+  }
+
+  modules.add(module);
+};
+
+export const findDependencies = src => {
+  const dep = [];
+  src.replace(/(import .+ )?(from|require)\s?['"(](.+)['")]/g, (...args) => {
+    dep.push(args[3]);
+    return args[3];
+  });
+  return dep;
+};
+
+export const findDependenciesByAST = src => {
+  return dt(src, {
+    mixedImports: true,
+    jsx: true,
+  });
 };
