@@ -2,7 +2,13 @@ import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
 import { dirname, join, relative } from 'path';
 import { find } from './common-path';
-import { filterModule, findDependenciesByAST, propertyExists, safeGetProperty, safeReadJSON, } from './util';
+import {
+  filterModule,
+  findDependenciesByAST,
+  propertyExists,
+  safeGetProperty,
+  safeReadJSON,
+} from './util';
 
 export enum ProjectType {
   UNKNOWN = 'unknown',
@@ -12,6 +18,21 @@ export enum ProjectType {
   MIDWAY_FAAS = 'midway_faas',
   MIDWAY_FAAS_FRONT_MONOREPO = 'midway_faas_front_monorepo',
   MIDWAY_FAAS_FRONT_integration = 'midway_faas_front_integration',
+}
+
+export interface AnalyzeResult {
+  cwd: string;
+  midwayRoot: string;
+  tsCodeRoot: string;
+  tsConfigFilePath: string;
+  tsBuildRoot: string;
+  integrationProject: boolean;
+  projectType: ProjectType;
+  usingDependencies: string[];
+  usingDependenciesVersion: {
+    valid: object;
+    unValid: string[];
+  };
 }
 
 export class Locator {
@@ -31,11 +52,13 @@ export class Locator {
     this.cwd = cwd || this.analyzeCWD();
   }
 
-  async run(options: {
-    root?: string;
-    tsCodeRoot?: string;
-    tsBuildRoot?: string;
-  } = {}) {
+  async run(
+    options: {
+      root?: string;
+      tsCodeRoot?: string;
+      tsBuildRoot?: string;
+    } = {}
+  ): Promise<AnalyzeResult> {
     this.tsCodeRoot = options.tsCodeRoot;
     this.tsBuildRoot = options.tsBuildRoot;
 
@@ -142,7 +165,7 @@ export class Locator {
       });
       if (filterArr.length) {
         // 选出最短的路径，代表最接近当前 ts 代码，ts 编译器就会用这个
-        this.tsConfigFilePath = join(this.tsCodeRoot, filterArr[ 0 ]);
+        this.tsConfigFilePath = join(this.tsCodeRoot, filterArr[0]);
         if (!this.tsBuildRoot) {
           const tsConfig = await safeReadJSON(this.tsConfigFilePath);
           const distDir = safeGetProperty(tsConfig, 'compilerOptions.outDir');
@@ -150,7 +173,6 @@ export class Locator {
             this.tsBuildRoot = join(dirname(this.tsConfigFilePath), distDir);
           }
         }
-
       }
     }
   }
@@ -164,9 +186,12 @@ export class Locator {
     if (this.integrationProject) {
       // 一体化项目，需要分析函数用到的依赖
       const dependencies: Set<string> = new Set();
-      const paths: string[] = await globby(['**/*.ts', '**/*.js', '!**/*.d.ts'], {
-        cwd: this.tsCodeRoot,
-      });
+      const paths: string[] = await globby(
+        ['**/*.ts', '**/*.js', '!**/*.d.ts'],
+        {
+          cwd: this.tsCodeRoot,
+        }
+      );
 
       for (const p of paths) {
         const result: string[] = findDependenciesByAST(
@@ -180,23 +205,22 @@ export class Locator {
       this.usingDependencies = Array.from(dependencies.values());
     } else {
       const json = await safeReadJSON(join(this.root, 'package.json'));
-      const dependencies = json[ 'dependencies' ] || [];
+      const dependencies = json['dependencies'] || [];
       this.usingDependencies = Object.keys(dependencies);
     }
-
   }
 
   private async analyzeUsingDependenciesVersion() {
     if (!this.root || !this.tsCodeRoot || !this.usingDependencies) return;
     const json = await safeReadJSON(join(this.root, 'package.json'));
-    const dependencies = json[ 'dependencies' ] || [];
+    const dependencies = json['dependencies'] || [];
     const dependenciesVersion = {
       valid: {},
       unValid: [],
     };
     this.usingDependencies.forEach(depName => {
-      if (dependencies[ depName ]) {
-        dependenciesVersion.valid[ depName ] = dependencies[ depName ];
+      if (dependencies[depName]) {
+        dependenciesVersion.valid[depName] = dependencies[depName];
       } else {
         dependenciesVersion.unValid.push(depName);
       }
