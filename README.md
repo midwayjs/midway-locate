@@ -25,6 +25,19 @@ console.log(result);
   - `usingDependencies`: 使用的依赖，一体化项目会根据 tsCodeRoot 分析使用的依赖（package.json 的子集），其他项目直接读取 package.json 中的依赖
   - `usingDependenciesVersion`: 带版本，同上
 
+## 其他
+
+可以在 package.json 中传入 `tsCodeRoot` 和 `tsBuildRoot`，但是以 `run` 的参数为主。
+
+```json
+{
+  "midway-integration": {
+    "tsCodeRoot": "src/apis",
+    "tsBuildRoot": "build/faas"
+  }
+}
+```
+
 ## 支持目录
 
 - [x] 纯 midway 项目
