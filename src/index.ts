@@ -1,14 +1,8 @@
 import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
-import { dirname, join, relative } from 'path';
+import { dirname, isAbsolute, join, relative } from 'path';
 import { find } from './common-path';
-import {
-  filterModule,
-  findDependenciesByAST,
-  propertyExists,
-  safeGetProperty,
-  safeReadJSON,
-} from './util';
+import { filterModule, findDependenciesByAST, propertyExists, safeGetProperty, safeReadJSON, } from './util';
 
 export enum ProjectType {
   UNKNOWN = 'unknown',
@@ -59,6 +53,7 @@ export class Locator {
       tsBuildRoot?: string;
     } = {}
   ): Promise<AnalyzeResult> {
+    await this.formatOptions(options);
     this.tsCodeRoot = options.tsCodeRoot;
     this.tsBuildRoot = options.tsBuildRoot;
 
@@ -83,6 +78,21 @@ export class Locator {
 
   private analyzeCWD() {
     return process.cwd();
+  }
+
+  private async formatOptions(options) {
+    const json = await safeReadJSON(join(this.cwd, 'package.json'));
+    const integrationOptions: {
+      tsCodeRoot: string;
+      tsBuildRoot: string;
+      projectType: string;
+    } = safeGetProperty(json, 'midway-integration');
+    if (!options.tsCodeRoot) {
+      options.tsCodeRoot = integrationOptions.tsCodeRoot;
+    }
+    if (!options.tsBuildRoot) {
+      options.tsBuildRoot = integrationOptions.tsBuildRoot;
+    }
   }
 
   /**
@@ -124,7 +134,14 @@ export class Locator {
    * 分析 ts 代码的根目录，比如 src，或者其他
    */
   private async analyzeTSCodeRoot() {
-    if (!this.root || this.tsCodeRoot) return;
+    if (!this.root) {
+      return;
+    }
+    if (this.tsCodeRoot) {
+      this.tsCodeRoot = this.formatAbsolutePath(this.tsCodeRoot);
+      return;
+    }
+
     const paths: string[] = await globby(
       ['**/*.ts', '!node_modules', '!**/*.d.ts'],
       {
@@ -140,7 +157,13 @@ export class Locator {
    * 分析构建后的根目录
    */
   private async analyzeTSBuildRoot() {
-    if (!this.root || !this.tsCodeRoot) return;
+    if (!this.root || !this.tsCodeRoot) {
+      return;
+    }
+
+    if (this.tsBuildRoot) {
+      this.tsBuildRoot = this.formatAbsolutePath(this.tsBuildRoot);
+    }
     const paths: string[] = await globby(
       ['**/tsconfig.json', '!node_modules'],
       {
@@ -165,7 +188,7 @@ export class Locator {
       });
       if (filterArr.length) {
         // 选出最短的路径，代表最接近当前 ts 代码，ts 编译器就会用这个
-        this.tsConfigFilePath = join(this.tsCodeRoot, filterArr[0]);
+        this.tsConfigFilePath = join(this.tsCodeRoot, filterArr[ 0 ]);
         if (!this.tsBuildRoot) {
           const tsConfig = await safeReadJSON(this.tsConfigFilePath);
           const distDir = safeGetProperty(tsConfig, 'compilerOptions.outDir');
@@ -205,7 +228,7 @@ export class Locator {
       this.usingDependencies = Array.from(dependencies.values());
     } else {
       const json = await safeReadJSON(join(this.root, 'package.json'));
-      const dependencies = json['dependencies'] || [];
+      const dependencies = json[ 'dependencies' ] || [];
       this.usingDependencies = Object.keys(dependencies);
     }
   }
@@ -213,14 +236,14 @@ export class Locator {
   private async analyzeUsingDependenciesVersion() {
     if (!this.root || !this.tsCodeRoot || !this.usingDependencies) return;
     const json = await safeReadJSON(join(this.root, 'package.json'));
-    const dependencies = json['dependencies'] || [];
+    const dependencies = json[ 'dependencies' ] || [];
     const dependenciesVersion = {
       valid: {},
       unValid: [],
     };
     this.usingDependencies.forEach(depName => {
-      if (dependencies[depName]) {
-        dependenciesVersion.valid[depName] = dependencies[depName];
+      if (dependencies[ depName ]) {
+        dependenciesVersion.valid[ depName ] = dependencies[ depName ];
       } else {
         dependenciesVersion.unValid.push(depName);
       }
@@ -231,15 +254,15 @@ export class Locator {
   private analyzeIntegrationProject() {
     if (!this.root) return;
 
-    // 当前目录不等于 midway 根目录，对等视图
-    if (this.cwd !== this.root) {
-      if (this.isMidwayProject) {
-        this.projectType = ProjectType.MIDWAY_FRONT_MONOREPO;
-      } else {
-        this.projectType = ProjectType.MIDWAY_FAAS_FRONT_MONOREPO;
+      // 当前目录不等于 midway 根目录，对等视图
+      if (this.cwd !== this.root) {
+        if (this.isMidwayProject) {
+          this.projectType = ProjectType.MIDWAY_FRONT_MONOREPO;
+        } else {
+          this.projectType = ProjectType.MIDWAY_FAAS_FRONT_MONOREPO;
+        }
+        return;
       }
-      return;
-    }
 
     // 全 ts 版本，前后端代码可能在一起，前端视图的情况
     // rax/ice 等
@@ -259,5 +282,12 @@ export class Locator {
     } else if (this.isMidwayFaaSProject) {
       this.projectType = ProjectType.MIDWAY_FAAS;
     }
+  }
+
+  private formatAbsolutePath(p: string) {
+    if (!isAbsolute(p)) {
+      return join(this.root, p);
+    }
+    return p;
   }
 }
