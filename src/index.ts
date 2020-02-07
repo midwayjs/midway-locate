@@ -86,7 +86,7 @@ export class Locator {
       tsCodeRoot: string;
       tsBuildRoot: string;
       projectType: string;
-    } = safeGetProperty(json, 'midway-integration');
+    } = safeGetProperty(json, 'midway-integration') || {};
     if (!options.tsCodeRoot) {
       options.tsCodeRoot = integrationOptions.tsCodeRoot;
     }
