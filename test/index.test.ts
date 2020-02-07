@@ -223,4 +223,30 @@ describe('/test/index.test.ts', () => {
     assert(result.integrationProject === true);
     assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
   });
+
+  it('should locate in midway faas by packages', async () => {
+    const locator = new Locator(join(__dirname, 'fixtures/ice-faas-ts-pkg-options'));
+    const result = await locator.run();
+    assert(result.cwd === join(__dirname, 'fixtures/ice-faas-ts-pkg-options'));
+    assert(result.midwayRoot === join(__dirname, 'fixtures/ice-faas-ts-pkg-options'));
+    assert(
+      result.tsCodeRoot === join(__dirname, 'fixtures/ice-faas-ts-pkg-options/src/apis')
+    );
+    assert(
+      result.tsConfigFilePath ===
+      join(__dirname, 'fixtures/ice-faas-ts-pkg-options/tsconfig.json')
+    );
+    assert(result.tsBuildRoot === join(__dirname, 'fixtures/ice-faas-ts-pkg-options/build/faas'));
+    assert.deepEqual(result.usingDependencies, [
+      '@ali/midway-faas',
+    ]);
+    assert.deepEqual(result.usingDependenciesVersion, {
+      valid: {
+        "@ali/midway-faas": "^2.10.14",
+      },
+      unValid: [],
+    });
+    assert(result.integrationProject === true);
+    assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
+  });
 });
