@@ -14,6 +14,8 @@ export enum ProjectType {
   MIDWAY_FAAS_FRONT_integration = 'midway_faas_front_integration',
 }
 
+const globOptions = { followSymbolicLinks: false };
+
 export interface AnalyzeResult {
   cwd: string;
   midwayRoot: string;
@@ -102,6 +104,7 @@ export class Locator {
     const paths: string[] = await globby(
       ['**/package.json', '!node_modules', '!test'],
       {
+        ...globOptions,
         cwd: this.cwd,
       }
     );
@@ -145,6 +148,7 @@ export class Locator {
     const paths: string[] = await globby(
       ['**/*.ts', '!node_modules', '!**/*.d.ts'],
       {
+        ...globOptions,
         cwd: this.root,
       }
     );
@@ -167,6 +171,7 @@ export class Locator {
     const paths: string[] = await globby(
       ['**/tsconfig.json', '!node_modules'],
       {
+        ...globOptions,
         cwd: this.root,
       }
     );
@@ -212,6 +217,7 @@ export class Locator {
       const paths: string[] = await globby(
         ['**/*.ts', '**/*.js', '!**/*.d.ts'],
         {
+          ...globOptions,
           cwd: this.tsCodeRoot,
         }
       );
