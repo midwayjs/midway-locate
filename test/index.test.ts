@@ -249,4 +249,18 @@ describe('/test/index.test.ts', () => {
     assert(result.integrationProject === true);
     assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
   });
+
+  it('should survive through malicious cylic symlinks', async () => {
+    const locator = new Locator(join(__dirname, 'fixtures/cylic-symlinks'));
+    const result = await locator.run();
+    assert.strictEqual(result.cwd, join(__dirname, 'fixtures/cylic-symlinks'));
+    assert(!result.midwayRoot);
+    assert(!result.tsCodeRoot);
+    assert(!result.tsConfigFilePath);
+    assert(!result.tsBuildRoot);
+    assert(!result.usingDependencies);
+    assert(!result.usingDependenciesVersion);
+    assert(result.integrationProject === false);
+    assert(result.projectType === ProjectType.UNKNOWN);
+  });
 });
