@@ -113,14 +113,14 @@ export const filterModule = (module: string, modules: Set<string>) => {
   modules.add(module);
 };
 
-export const findDependencies = src => {
-  const dep = [];
-  src.replace(/(import .+ )?(from|require)\s?['"(](.+)['")]/g, (...args) => {
-    dep.push(args[3]);
-    return args[3];
-  });
-  return dep;
-};
+// export const findDependencies = src => {
+//   const dep = [];
+//   src.replace(/(import .+ )?(from|require)\s?['"(](.+)['")]/g, (...args) => {
+//     dep.push(args[3]);
+//     return args[3];
+//   });
+//   return dep;
+// };
 
 export const findDependenciesByAST = src => {
   return dt(src, {
