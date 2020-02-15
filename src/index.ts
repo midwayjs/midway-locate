@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
-import { dirname, isAbsolute, join, relative } from 'path';
+import { dirname, isAbsolute, join } from 'path';
 import { find } from './common-path';
 import {
   filterModule,
@@ -8,6 +8,7 @@ import {
   propertyExists,
   safeGetProperty,
   safeReadJSON,
+  findFile,
 } from './util';
 
 export enum ProjectType {
@@ -181,37 +182,17 @@ export class Locator {
     if (this.tsBuildRoot) {
       this.tsBuildRoot = this.formatAbsolutePath(this.tsBuildRoot);
     }
-    const paths: string[] = await globby(['**/tsconfig.json'], {
-      ...globOptions,
-      cwd: this.root,
-      deep: 5,
-    });
-    if (paths && paths.length) {
-      const filterArr = [];
+    this.tsConfigFilePath = await findFile([
+      join(this.tsCodeRoot, 'tsconfig.json'),
+      join(this.root, 'tsconfig.json'),
+      join(this.cwd, 'tsconfig.json'),
+    ]);
 
-      for (const p of paths) {
-        if (
-          p === 'tsconfig.json' ||
-          this.tsCodeRoot.indexOf(dirname(p)) !== -1
-        ) {
-          let relativeDir = relative(this.tsCodeRoot, join(this.root, p));
-          filterArr.push(relativeDir);
-        }
-      }
-      // 排序
-      filterArr.sort((path1, path2) => {
-        return path1.length - path2.length;
-      });
-      if (filterArr.length) {
-        // 选出最短的路径，代表最接近当前 ts 代码，ts 编译器就会用这个
-        this.tsConfigFilePath = join(this.tsCodeRoot, filterArr[0]);
-        if (!this.tsBuildRoot) {
-          const tsConfig = await safeReadJSON(this.tsConfigFilePath);
-          const distDir = safeGetProperty(tsConfig, 'compilerOptions.outDir');
-          if (distDir) {
-            this.tsBuildRoot = join(dirname(this.tsConfigFilePath), distDir);
-          }
-        }
+    if (this.tsConfigFilePath && !this.tsBuildRoot) {
+      const tsConfig = await safeReadJSON(this.tsConfigFilePath);
+      const distDir = safeGetProperty(tsConfig, 'compilerOptions.outDir');
+      if (distDir) {
+        this.tsBuildRoot = join(dirname(this.tsConfigFilePath), distDir);
       }
     }
   }

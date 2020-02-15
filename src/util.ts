@@ -128,3 +128,11 @@ export const findDependenciesByAST = src => {
     jsx: true,
   });
 };
+
+export const findFile = async (files: string[]) => {
+  for (const file of files) {
+    if (await exists(file)) {
+      return file;
+    }
+  }
+};
