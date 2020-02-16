@@ -1,5 +1,12 @@
 # midway locate
 
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/midwayjs/midway-locate/blob/master/LICENSE)
+[![GitHub tag](https://img.shields.io/github/tag/midwayjs/midway-locate.svg)]()
+[![Build Status](https://travis-ci.com/midwayjs/midway-locate.svg?branch=develop)](https://travis-ci.com/midwayjs/midway-locate)
+[![Test Coverage](https://img.shields.io/codecov/c/github/midwayjs/midway-locate/master.svg)](https://codecov.io/gh/midwayjs/midway-locate/branch/master)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/midwayjs/midway-locate/pulls)
+
+
 扫描仓库目录结构，找出 midway 的代码位置。
 
 ## API
@@ -46,3 +53,7 @@ console.log(result);
 - [x] 纯 midway-faas
 - [x] midway-faas + 前端（分目录）
 - [x] midway-faas + 前端（合目录）
+
+## License
+
+[MIT](http://github.com/midwayjs/midway-locate/blob/master/LICENSE)
