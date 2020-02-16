@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
 import { dirname, isAbsolute, join } from 'path';
-import { find } from './common-path';
+import * as find from 'common-path';
 import {
   filterModule,
   findDependenciesByAST,
