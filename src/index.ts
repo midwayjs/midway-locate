@@ -219,12 +219,13 @@ export class Locator {
           const result: string[] = findDependenciesByAST(
             readFileSync(join(this.tsCodeRoot, p), 'utf-8')
           );
-
           result.forEach(module => {
             filterModule(module, dependencies);
           });
         } catch (err) {
-          console.error(`${p} find dependencies error, err=${err}`);
+          console.error(
+            `"${p}" find dependencies and parse error, err="${err.message}"`
+          );
         }
       }
       this.usingDependencies = Array.from(dependencies.values());

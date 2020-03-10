@@ -325,4 +325,22 @@ describe('/test/index.test.ts', () => {
     assert(result.integrationProject === true);
     assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
   });
+
+  it('locate in project with error file', done => {
+    const locator = new Locator(join(__dirname, 'fixtures/midway-error-file'));
+    const oleErrorOutput = console.error;
+    console.error = (...args) => {
+      assert(/parse error/, args[0]);
+      setTimeout(() => {
+        // restore
+        console.error = oleErrorOutput;
+        done();
+      }, 500);
+      return oleErrorOutput.apply(null, args);
+    };
+    locator.run({
+      tsCodeRoot: join(__dirname, 'fixtures/midway-error-file/src/apis'),
+      tsBuildRoot: join(__dirname, 'fixtures/midway-error-file/build/faas'),
+    });
+  });
 });
