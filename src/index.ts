@@ -215,13 +215,17 @@ export class Locator {
       );
 
       for (const p of paths) {
-        const result: string[] = findDependenciesByAST(
-          readFileSync(join(this.tsCodeRoot, p), 'utf-8')
-        );
+        try {
+          const result: string[] = findDependenciesByAST(
+            readFileSync(join(this.tsCodeRoot, p), 'utf-8')
+          );
 
-        result.forEach(module => {
-          filterModule(module, dependencies);
-        });
+          result.forEach(module => {
+            filterModule(module, dependencies);
+          });
+        } catch (err) {
+          console.error(`${p} find dependencies error, err=${err}`);
+        }
       }
       this.usingDependencies = Array.from(dependencies.values());
     } else {
