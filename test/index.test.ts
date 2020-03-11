@@ -327,7 +327,7 @@ describe('/test/index.test.ts', () => {
   });
 
   it('locate in project with error file', done => {
-    console.log('------');
+    console.log('------', console.error);
     const oleErrorOutput = console.error;
     console.error = (...args) => {
       assert(/parse error/, args[0]);
