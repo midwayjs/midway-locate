@@ -330,6 +330,7 @@ describe('/test/index.test.ts', () => {
     const oleErrorOutput = console.error;
     console.error = (...args) => {
       assert(/parse error/, args[0]);
+      console.log('-------run after assert');
       setTimeout(() => {
         // restore
         console.error = oleErrorOutput;
