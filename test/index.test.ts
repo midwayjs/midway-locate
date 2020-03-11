@@ -327,7 +327,6 @@ describe('/test/index.test.ts', () => {
   });
 
   it('locate in project with error file', done => {
-    const locator = new Locator(join(__dirname, 'fixtures/midway-error-file'));
     const oleErrorOutput = console.error;
     console.error = (...args) => {
       assert(/parse error/, args[0]);
@@ -338,6 +337,7 @@ describe('/test/index.test.ts', () => {
       }, 500);
       return oleErrorOutput.apply(null, args);
     };
+    const locator = new Locator(join(__dirname, 'fixtures/midway-error-file'));
     locator.run({
       tsCodeRoot: join(__dirname, 'fixtures/midway-error-file/src/apis'),
       tsBuildRoot: join(__dirname, 'fixtures/midway-error-file/build/faas'),
