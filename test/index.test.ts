@@ -2,6 +2,19 @@ import { ProjectType, Locator } from '../src';
 import { join } from 'path';
 import * as assert from 'assert';
 
+async function assertNotThrowsAsync(fn, err?, msg?) {
+  let f = () => {};
+  try {
+    await fn();
+  } catch (e) {
+    f = () => {
+      throw e;
+    };
+  } finally {
+    assert.doesNotThrow(f, err, msg);
+  }
+}
+
 describe('/test/index.test.ts', () => {
   it('locate in egg project', async () => {
     const locator = new Locator(join(__dirname, 'fixtures/egg-base'));
@@ -326,24 +339,13 @@ describe('/test/index.test.ts', () => {
     assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
   });
 
-  it('locate in project with error file', done => {
-    console.log('------', console.error === console.log);
-    console.error('hello world');
-    const oleErrorOutput = console.error;
-    console.error = (...args) => {
-      assert(/parse error/, args[0]);
-      console.log('-------run after assert');
-      setTimeout(() => {
-        // restore
-        console.error = oleErrorOutput;
-        done();
-      }, 500);
-      return oleErrorOutput.apply(null, args);
-    };
+  it('locate in project with error file', async () => {
     const locator = new Locator(join(__dirname, 'fixtures/midway-error-file'));
-    locator.run({
-      tsCodeRoot: join(__dirname, 'fixtures/midway-error-file/src/apis'),
-      tsBuildRoot: join(__dirname, 'fixtures/midway-error-file/build/faas'),
+    await assertNotThrowsAsync(async () => {
+      await locator.run({
+        tsCodeRoot: join(__dirname, 'fixtures/midway-error-file/src/apis'),
+        tsBuildRoot: join(__dirname, 'fixtures/midway-error-file/build/faas'),
+      });
     });
   });
 });
