@@ -1,0 +1,22 @@
+{
+  "name": "midway-base",
+  "version": "1.0.0",
+  "dependencies": {
+    "@ali/midway-faas": "1"
+  },
+  "devDependencies": {
+    "midway-bin": "1"
+  },
+  "engines": {
+    "node": ">=10.16.0"
+  },
+  "scripts": {
+    "debug": "cross-env NODE_ENV=local midway-bin debug --ts",
+    "lint": "tslint --fix -p tsconfig.json -t stylish",
+    "cov": "midway-bin cov --ts",
+    "ci": "midway-bin cov --ts",
+    "build": "midway-bin build -c",
+    "start": "cross-env NODE_ENV=local midway-bin dev --ts"
+  },
+  "license": "MIT"
+}
