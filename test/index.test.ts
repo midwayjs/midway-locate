@@ -348,4 +348,51 @@ describe('/test/index.test.ts', () => {
       });
     });
   });
+
+  it('locate in rax+faas project and use sequelize-typescript', async () => {
+    const locator = new Locator(join(__dirname, 'fixtures/rax-fc-sequelize'));
+    const result = await locator.run();
+    assert(result.cwd === join(__dirname, 'fixtures/rax-fc-sequelize'));
+    assert(result.midwayRoot === join(__dirname, 'fixtures/rax-fc-sequelize'));
+    assert(
+      result.tsCodeRoot ===
+        join(__dirname, 'fixtures/rax-fc-sequelize', 'src/apis')
+    );
+    assert.deepEqual(result.usingDependencies, [
+      '@midwayjs/faas',
+      'sequelize-typescript',
+      '@midwayjs/abc',
+      'abc',
+      'foo',
+      'vue',
+      'wow',
+      'all',
+      'baby',
+      '@midway/fake',
+      '@midwayjs/test-module',
+      'sequelize',
+      'mysql2',
+    ]);
+    assert.deepEqual(result.usingDependenciesVersion, {
+      valid: {
+        '@midwayjs/faas': '*',
+        mysql2: '^2.1.0',
+        sequelize: '^5.21.10',
+        'sequelize-typescript': '^1.1.0',
+      },
+      unValid: [
+        '@midwayjs/abc',
+        'abc',
+        'foo',
+        'vue',
+        'wow',
+        'all',
+        'baby',
+        '@midway/fake',
+        '@midwayjs/test-module',
+      ],
+    });
+    assert(result.integrationProject === true);
+    assert(result.projectType === ProjectType.MIDWAY_FAAS_FRONT_integration);
+  });
 });

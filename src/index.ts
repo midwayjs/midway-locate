@@ -219,7 +219,7 @@ export class Locator {
           const result: string[] = findDependenciesByAST(
             readFileSync(join(this.tsCodeRoot, p), 'utf-8')
           );
-          result.forEach(module => {
+          result.forEach((module) => {
             filterModule(module, dependencies);
           });
         } catch (err) {
@@ -229,6 +229,15 @@ export class Locator {
         }
       }
       this.usingDependencies = Array.from(dependencies.values());
+      // whitelist for sequelize
+      const json = await safeReadJSON(join(this.root, 'package.json'));
+      const pkgDeps = json['dependencies'] || [];
+      if (this.usingDependencies.includes('sequelize-typescript')) {
+        this.usingDependencies.push('sequelize');
+        if (pkgDeps['mysql2']) {
+          this.usingDependencies.push('mysql2');
+        }
+      }
     } else {
       const json = await safeReadJSON(join(this.root, 'package.json'));
       const dependencies = json['dependencies'] || [];
@@ -244,7 +253,7 @@ export class Locator {
       valid: {},
       unValid: [],
     };
-    this.usingDependencies.forEach(depName => {
+    this.usingDependencies.forEach((depName) => {
       if (dependencies[depName]) {
         dependenciesVersion.valid[depName] = dependencies[depName];
       } else {
