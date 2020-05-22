@@ -31,7 +31,7 @@ const globOptions = {
     '**/build/**', // 构建产物目录
     '**/dist/**', // 构建产物目录
     '**/.serverless/**', // faas 构建目录
-    '**/faas_debug_tmp/**', // faas 调试临时目录
+    '**/.faas_debug_tmp/**', // faas 调试临时目录
   ],
 };
 
