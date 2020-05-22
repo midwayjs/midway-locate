@@ -1,0 +1,27 @@
+{
+  "name": "rax-fc",
+  "author": "zhangting",
+  "scripts": {
+    "build": "build-scripts build",
+    "start": "build-scripts start"
+  },
+  "dependencies": {
+    "rax": "^1.1.0",
+    "rax-app": "^0.2.0",
+    "driver-universal": "^3.0.0",
+    "rax-image": "^2.0.0",
+    "rax-link": "^1.0.1",
+    "rax-text": "^1.0.0",
+    "rax-view": "^1.0.0",
+    "rax-document": "^0.1.0",
+    "@midwayjs/faas": "*",
+    "sequelize": "^5.21.10",
+    "sequelize-typescript": "^1.1.0",
+    "mysql2": "^2.1.0"
+  },
+  "devDependencies": {
+    "build-plugin-rax-multi-pages": "^0.1.2",
+    "build-plugin-rax-app": "^1.0.0",
+    "@alib/build-scripts": "^0.1.0"
+  }
+}
