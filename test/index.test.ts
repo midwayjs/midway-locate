@@ -361,6 +361,7 @@ describe('/test/index.test.ts', () => {
     assert.deepEqual(result.usingDependencies, [
       '@midwayjs/faas',
       'sequelize-typescript',
+      'request-promise',
       '@midwayjs/abc',
       'abc',
       'foo',
@@ -372,11 +373,14 @@ describe('/test/index.test.ts', () => {
       '@midwayjs/test-module',
       'sequelize',
       'mysql2',
+      'request',
     ]);
     assert.deepEqual(result.usingDependenciesVersion, {
       valid: {
         '@midwayjs/faas': '*',
         mysql2: '^2.1.0',
+        request: '*',
+        'request-promise': '*',
         sequelize: '^5.21.10',
         'sequelize-typescript': '^1.1.0',
       },

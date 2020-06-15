@@ -229,13 +229,19 @@ export class Locator {
         }
       }
       this.usingDependencies = Array.from(dependencies.values());
-      // whitelist for sequelize
       const json = await safeReadJSON(join(this.root, 'package.json'));
       const pkgDeps = json['dependencies'] || [];
+      // whitelist for sequelize
       if (this.usingDependencies.includes('sequelize-typescript')) {
         this.usingDependencies.push('sequelize');
         if (pkgDeps['mysql2']) {
           this.usingDependencies.push('mysql2');
+        }
+      }
+      // whitelist for sequelize
+      if (this.usingDependencies.includes('request-promise')) {
+        if (pkgDeps['request']) {
+          this.usingDependencies.push('request');
         }
       }
     } else {
