@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
-import { dirname, isAbsolute, join } from 'path';
+import { dirname, isAbsolute, join, extname } from 'path';
 import * as find from 'common-path';
 import {
   filterModule,
@@ -216,8 +216,13 @@ export class Locator {
 
       for (const p of paths) {
         try {
+          const file = join(this.tsCodeRoot, p);
+          const ext = extname(file);
+          const isJSX = ext === '.tsx' || ext === '.jsx' || ext === 'js';
+
           const result: string[] = findDependenciesByAST(
-            readFileSync(join(this.tsCodeRoot, p), 'utf-8')
+            readFileSync(file, 'utf-8'),
+            isJSX
           );
           result.forEach((module) => {
             filterModule(module, dependencies);
