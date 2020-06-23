@@ -218,7 +218,7 @@ export class Locator {
         try {
           const file = join(this.tsCodeRoot, p);
           const ext = extname(file);
-          const isJSX = ext === '.tsx' || ext === '.jsx' || ext === 'js';
+          const isJSX = ext === '.tsx' || ext === '.jsx' || ext === '.js';
 
           const result: string[] = findDependenciesByAST(
             readFileSync(file, 'utf-8'),
