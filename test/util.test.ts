@@ -53,7 +53,7 @@ describe('/test/util.test.ts', () => {
       );
 
       it('all', () => {
-        deepEqual(detective(input), [
+        deepEqual(detective(input, true), [
           'foo',
           'vue/dist/vue',
           'wow',
@@ -109,6 +109,30 @@ describe('/test/util.test.ts', () => {
       it('should analyze ts file', () => {
         const input = readFileSync(
           join(__dirname, './fixtures/detective_case/fixture.ts'),
+          'utf8'
+        );
+        deepEqual(detective(input), ['midway']);
+      });
+
+      it('should analyze jsx file without syntax error', () => {
+        const input = readFileSync(
+          join(__dirname, './fixtures/detective_case/jsx.jsx'),
+          'utf8'
+        );
+        deepEqual(detective(input, true), ['midway']);
+      });
+
+      it('should analyze tsx file without syntax error', () => {
+        const input = readFileSync(
+          join(__dirname, './fixtures/detective_case/tsx.tsx'),
+          'utf8'
+        );
+        deepEqual(detective(input, true), ['midway']);
+      });
+
+      it('should analyze ts file without syntax error', () => {
+        const input = readFileSync(
+          join(__dirname, './fixtures/detective_case/type-assert.ts'),
           'utf8'
         );
         deepEqual(detective(input), ['midway']);

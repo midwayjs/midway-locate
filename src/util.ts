@@ -122,10 +122,10 @@ export const filterModule = (module: string, modules: Set<string>) => {
 //   return dep;
 // };
 
-export const findDependenciesByAST = src => {
-  return dt(src, {
+export const findDependenciesByAST = (source: string, jsx = false) => {
+  return dt(source, {
     mixedImports: true,
-    jsx: true,
+    jsx,
   });
 };
 
