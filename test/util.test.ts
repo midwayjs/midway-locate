@@ -2,6 +2,7 @@ import {
   findDependenciesByAST as detective,
   safeGetProperty,
   safeReadJSON,
+  findCommonDir,
 } from '../src/util';
 import { join } from 'path';
 import * as assert from 'assert';
@@ -137,6 +138,70 @@ describe('/test/util.test.ts', () => {
         );
         deepEqual(detective(input), ['midway']);
       });
+    });
+  });
+
+  describe('findCommonDir', () => {
+    it('empty', () => {
+      const common = findCommonDir([]);
+      assert(common === '');
+    });
+    it('different dirname', () => {
+      const common = findCommonDir([
+        '/src',
+        '/srcxxx',
+      ]);
+      assert(common === '');
+    });
+    it('common prefix', () => {
+      const common = findCommonDir([
+        '/src/',
+        '/src/xxx',
+      ]);
+      assert(common === '/src');
+    });
+    it('common prefix multi level', () => {
+      const common = findCommonDir([
+        '/projects/myapp/src/util/one.js',
+        '/projects/myapp/test/fixtures/two.js',
+      ]);
+      assert(common === '/projects/myapp');
+    });
+    it('common prefix multi level not root', () => {
+      const common = findCommonDir([
+        'projects/myapp/src/util/one.js',
+        'projects/myapp/test/fixtures/two.js',
+      ]);
+      assert(common === 'projects/myapp');
+    });
+
+    it('common prefix multi level in windows', () => {
+      const common = findCommonDir([
+        'C:\\lib\\hash.js',
+        'C:\\lib\\encode\\url.js',
+      ]);
+      assert(common === 'C:\\lib');
+    });
+
+    it('one file', () => {
+      const common = findCommonDir(['/src/apis/index.ts']);
+      assert(common === '/src/apis');
+    });
+    it('two root file', () => {
+      const common = findCommonDir(['a.ts', 'b.ts']);
+      assert(common === '');
+    });
+    it('two different dir file', () => {
+      const common = findCommonDir(['src/a.ts', 'apis/b.ts']);
+      assert(common === '');
+    });
+    it('two same dir file', () => {
+      const common = findCommonDir(['src/a.ts', 'src/b.ts']);
+      assert(common === 'src');
+    });
+    it('two different dir level file', () => {
+      const common = findCommonDir(['src/apis/a.ts', 'src/apis/other/b.ts']);
+      assert(common === 'src/apis');
     });
   });
 });

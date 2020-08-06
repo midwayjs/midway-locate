@@ -136,3 +136,34 @@ export const findFile = async (files: string[]) => {
     }
   }
 };
+
+
+
+
+export const findCommonDir = (files: string[]) => {
+  if (files.length == 0)
+    return "";
+  const isWindow = files[0].indexOf('\\') != -1;
+  const splitStr = isWindow ? '\\' : '/';
+  const allFilePath = files.map(file => {
+    const list = file.split(splitStr);
+    const last = list[list.length - 1];
+    if (last.indexOf('.') != -1) {
+      return list.slice(0, -1);
+    }
+    return list;
+  });
+  let ans = allFilePath[0];
+  for (let i = 1; i < allFilePath.length; i++) {
+    let j = 0;
+    for (; j < ans.length && j < allFilePath[i].length; j++) {
+      if (ans[j] != allFilePath[i][j])
+        break;
+    }
+    ans = ans.slice(0, j);
+    if (!ans.length) {
+      return '';
+    }
+  }
+  return ans.join(splitStr);
+};

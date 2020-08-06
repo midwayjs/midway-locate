@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import * as globby from 'globby';
 import { dirname, isAbsolute, join, extname } from 'path';
-import * as find from 'common-path';
 import {
   filterModule,
   findDependenciesByAST,
@@ -9,6 +8,7 @@ import {
   safeGetProperty,
   safeReadJSON,
   findFile,
+  findCommonDir,
 } from './util';
 
 export enum ProjectType {
@@ -167,8 +167,8 @@ export class Locator {
       cwd: this.root,
     });
 
-    const common = find(paths);
-    this.tsCodeRoot = join(this.root, common.commonDir);
+    const common = findCommonDir(paths);
+    this.tsCodeRoot = join(this.root, common);
   }
 
   /**
