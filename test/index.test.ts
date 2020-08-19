@@ -374,10 +374,12 @@ describe('/test/index.test.ts', () => {
       'sequelize',
       'request',
       'mysql2',
+      'egg-mysql',
     ]);
     assert.deepEqual(result.usingDependenciesVersion, {
       valid: {
         '@midwayjs/faas': '*',
+        'egg-mysql': '*',
         mysql2: '^2.1.0',
         request: '*',
         'request-promise': '*',
