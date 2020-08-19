@@ -1,31 +1,33 @@
-export function includeDependencies(usingDependencies, pkgDeps) {
+export function includeDependencies(usingDependencies, pkgDeps): string[] {
+  const result: Set<string> = new Set(usingDependencies);
   // whitelist for sequelize
   if (usingDependencies.includes('sequelize-typescript')) {
-    usingDependencies.push('sequelize');
+    result.add('sequelize');
   }
   // whitelist for request
   if (usingDependencies.includes('request-promise')) {
     if (pkgDeps['request']) {
-      usingDependencies.push('request');
+      result.add('request');
     }
   }
 
-  for (const key of Object.keys(usingDependencies)) {
+  for (const key of Object.keys(pkgDeps)) {
     // add for egg plugin
     if (/egg/.test(key)) {
-      usingDependencies.push(key);
+      result.add(key);
     }
 
     // add for midway package
     if (/midway/.test(key)) {
-      usingDependencies.push(key);
+      result.add(key);
     }
 
     // add for db driver
     if (inclueDBDriver(key)) {
-      usingDependencies.push(key);
+      result.add(key);
     }
   }
+  return Array.from(result);
 }
 
 export function inclueDBDriver(key) {

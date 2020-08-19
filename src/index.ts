@@ -238,7 +238,10 @@ export class Locator {
       const json = await safeReadJSON(join(this.root, 'package.json'));
       const pkgDeps = json['dependencies'] || [];
 
-      includeDependencies(this.usingDependencies, pkgDeps);
+      this.usingDependencies = includeDependencies(
+        this.usingDependencies,
+        pkgDeps
+      );
     } else {
       const json = await safeReadJSON(join(this.root, 'package.json'));
       const dependencies = json['dependencies'] || [];

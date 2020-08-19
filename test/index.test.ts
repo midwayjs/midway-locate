@@ -372,8 +372,8 @@ describe('/test/index.test.ts', () => {
       '@midway/fake',
       '@midwayjs/test-module',
       'sequelize',
-      'mysql2',
       'request',
+      'mysql2',
     ]);
     assert.deepEqual(result.usingDependenciesVersion, {
       valid: {
