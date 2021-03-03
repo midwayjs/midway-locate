@@ -33,6 +33,8 @@ const globOptions = {
     '**/dist/**', // 构建产物目录
     '**/.serverless/**', // faas 构建目录
     '**/.faas_debug_tmp/**', // faas 调试临时目录
+    'midway.config.ts', // hook 配置
+    'vite.config.ts', // vite 配置
   ],
 };
 
@@ -282,7 +284,7 @@ export class Locator {
 
     // 全 ts 版本，前后端代码可能在一起，前端视图的情况
     // rax/ice 等
-    if (existsSync(join(this.root, 'src/pages'))) {
+    if (existsSync(join(this.root, 'src/pages')) || existsSync(join(this.root, 'midway.config.ts'))) {
       this.integrationProject = true;
       if (this.isMidwayProject) {
         this.projectType = ProjectType.MIDWAY_FRONT_integration;
