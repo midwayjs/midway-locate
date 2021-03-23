@@ -18,7 +18,7 @@ export function includeDependencies(usingDependencies, pkgDeps): string[] {
     }
 
     // add for midway package
-    if (/midway/.test(key)) {
+    if (/midway/.test(key) && !/build-plugin-/.test(key) && !/cli-plugin-/.test(key)) {
       result.add(key);
     }
 

@@ -284,7 +284,16 @@ export class Locator {
 
     // 全 ts 版本，前后端代码可能在一起，前端视图的情况
     // rax/ice 等
-    if (existsSync(join(this.root, 'src/pages')) || existsSync(join(this.root, 'midway.config.ts'))) {
+    const isIntegration = [
+      'src/pages',
+      'src/index.tsx',
+      'src/index.scss',
+      'src/index.less',
+      'midway.config.ts',
+    ].find((name: string) => {
+      return existsSync(join(this.root, name));
+    });
+    if (isIntegration) {
       this.integrationProject = true;
       if (this.isMidwayProject) {
         this.projectType = ProjectType.MIDWAY_FRONT_integration;
