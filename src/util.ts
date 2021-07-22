@@ -1,6 +1,4 @@
 import * as fse from 'fs-extra';
-import * as dt from 'detective-typescript';
-
 export const exists = async (file: string) => {
   return fse.pathExists(file);
 };
@@ -123,10 +121,24 @@ export const filterModule = (module: string, modules: Set<string>) => {
 // };
 
 export const findDependenciesByAST = (source: string, jsx = false) => {
-  return dt(source, {
-    mixedImports: true,
-    jsx,
-  });
+  const matches: Array<[RegExp, number]> = [
+    [/(?:^|\n)\s*import\s+\{[^\}]+\}\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
+    [/(?:^|\n)\s*import\s+\*\s+as\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
+     [/(?:^|\n)\s*import\(\s*['"](.*?)['"]\s*\)/mg, 1],
+     [/(?:^|\n)\s*import\s*['"](.*?)['"]\s*/mg, 1],
+    [/(?:^|\n)\s*import\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
+    [/(?:^|\n)\s*export\s+(?:\*|\{[^\}]+\})\s+from\s+['"](.*?)['"]\s*;?\s*/mg, 1],
+    [/(?:^|\n|\s+)require\(\s*['"](.*?)['"]\s*\)/mg, 1],
+  ];
+  const deps = [];
+  for(const match of matches) {
+    const [reg, resIndex] = match;
+    let execRes;
+    while(execRes = reg.exec(source)) {
+      deps.push(execRes[resIndex])
+    }
+  }
+  return deps;
 };
 
 export const findFile = async (files: string[]) => {
