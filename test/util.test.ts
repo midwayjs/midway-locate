@@ -56,10 +56,10 @@ describe('/test/util.test.ts', () => {
       it('all', () => {
         deepEqual(detective(input, true), [
           'foo',
-          'vue/dist/vue',
           'wow',
-          'baby',
           './async-module',
+          'vue/dist/vue',
+          'baby',
         ]);
       });
 
