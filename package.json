@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.2",
-    "@midwayjs/cli": "1",
+    "midway-bin": "1",
     "typescript": "^3.7.4"
   },
   "dependencies": {
