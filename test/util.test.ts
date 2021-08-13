@@ -56,9 +56,9 @@ describe('/test/util.test.ts', () => {
       it('all', () => {
         deepEqual(detective(input, true), [
           'foo',
+          'vue/dist/vue',
           'wow',
           './async-module',
-          'vue/dist/vue',
           'baby',
         ]);
       });
@@ -67,9 +67,37 @@ describe('/test/util.test.ts', () => {
         deepEqual(
           detective(`
       require(path.resolve('./'))
-      require('bar')
+      require ('bar')
     `),
           ['bar']
+        );
+      });
+
+      it('dynamical require', () => {
+        deepEqual(
+          detective(`
+      import 'modA';
+      import modB, { b as modBb } from 'modB';
+      import * as modC from 'modC';
+      import ("modD") import('modD2')
+      import { export1 , export2 as alias2 , [...] } from "modE";
+      require ('modF');require("modG");require
+      ('modH')
+      require('modI')
+      notrequire('modJ')
+    `),
+          [
+            'modB',
+            'modC',
+            'modE',
+            'modD',
+            'modD2',
+            'modA',
+            'modF',
+            'modG',
+            'modH',
+            'modI',
+          ]
         );
       });
 

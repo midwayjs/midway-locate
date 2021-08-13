@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "midway-bin test --ts",
+    "test": "midway-bin test",
     "cov": "midway-bin cov --ts",
     "build": "midway-bin build -c"
   },
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.2",
-    "midway-bin": "1",
+    "@midwayjs/cli": "1",
     "typescript": "^3.7.4"
   },
   "dependencies": {
