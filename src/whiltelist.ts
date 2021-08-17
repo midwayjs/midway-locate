@@ -41,5 +41,6 @@ export function inclueDBDriver(key) {
     'oracledb',
     '@sap/hana-client',
     'mongodb',
+    'mongoose',
   ].includes(key);
 }

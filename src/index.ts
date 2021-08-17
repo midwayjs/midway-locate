@@ -123,6 +123,10 @@ export class Locator {
    * 分析 midway 系列项目根目录
    */
   private async analyzeRoot() {
+    const tsConfig = await safeReadJSON(join(this.cwd, 'tsconfig.json'));
+    if (tsConfig?.exclude) {
+      globOptions.ignore.push(...tsConfig.exclude);
+    }
     const paths: string[] = await globby(['**/package.json'], {
       ...globOptions,
       cwd: this.cwd,
@@ -269,7 +273,7 @@ export class Locator {
     this.usingDependenciesVersion = dependenciesVersion;
   }
 
-  private analyzeIntegrationProject() {
+  private async analyzeIntegrationProject() {
     if (!this.root) return;
 
     // 当前目录不等于 midway 根目录，对等视图
@@ -284,15 +288,20 @@ export class Locator {
 
     // 全 ts 版本，前后端代码可能在一起，前端视图的情况
     // rax/ice 等
-    const isIntegration = [
+    let isIntegration = [
       'src/pages',
       'src/index.tsx',
       'src/index.scss',
       'src/index.less',
-      'midway.config.ts',
     ].find((name: string) => {
       return existsSync(join(this.root, name));
     });
+    if (!isIntegration && existsSync(join(this.root, 'midway.config.ts'))) {
+      const pkgJson: any = safeReadJSON(join(this.root, 'package.json'));
+      isIntegration = ['react', 'vue', 'rax'].find(depName => {
+        return pkgJson?.dependencies?.[depName] || pkgJson?.devDependencies?.[depName];
+      });
+    }
     if (isIntegration) {
       this.integrationProject = true;
       if (this.isMidwayProject) {

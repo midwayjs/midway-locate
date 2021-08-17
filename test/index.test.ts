@@ -375,11 +375,13 @@ describe('/test/index.test.ts', () => {
       'request',
       'mysql2',
       'egg-mysql',
+      'mongoose',
     ]);
     assert.deepEqual(result.usingDependenciesVersion, {
       valid: {
         '@midwayjs/faas': '*',
         'egg-mysql': '*',
+        'mongoose': '*',
         mysql2: '^2.1.0',
         request: '*',
         'request-promise': '*',
