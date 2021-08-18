@@ -20,7 +20,8 @@
     "request-promise": "*",
     "request": "*",
     "mysql2": "^2.1.0",
-    "egg-mysql": "*"
+    "egg-mysql": "*",
+    "mongoose": "*"
   },
   "devDependencies": {
     "build-plugin-rax-multi-pages": "^0.1.2",
