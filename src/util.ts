@@ -122,23 +122,23 @@ export const filterModule = (module: string, modules: Set<string>) => {
 
 export const findDependenciesByAST = (source: string, jsx = false) => {
   const matches: Array<[RegExp, number]> = [
-    [/(?:^|\n)\s*import\s+\{[^\}]+\}\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
-    [/(?:^|\n)\s*import\s+\*\s+as\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
-     [/(?:^|\n)\s*import\(\s*['"](.*?)['"]\s*\)/mg, 1],
-     [/(?:^|\n)\s*import\s*['"](.*?)['"]\s*/mg, 1],
-    [/(?:^|\n)\s*import\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?\s*/mg, 1],
-    [/(?:^|\n)\s*export\s+(?:\*|\{[^\}]+\})\s+from\s+['"](.*?)['"]\s*;?\s*/mg, 1],
-    [/(?:^|\n|\s+)require\(\s*['"](.*?)['"]\s*\)/mg, 1],
+    [/(?:^|\n|;|\s)\s*import\s+[\s\w\{\},\*\.\[\]]+\s+from\s*['"](.*?)['"]\s*;?/mg, 1],
+     [/(?:^|\n|;|\s)\s*import\s*\(\s*['"](.*?)['"]\s*\)/mg, 1],
+     [/(?:^|\n|;|\s)\s*import\s*['"](.*?)['"]\s*/mg, 1],
+    [/(?:^|\n|;|\s)\s*import\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?/mg, 1],
+    [/(?:^|\n|;|\s)\s*export\s+(?:\*|\{[^\}]+\})\s+from\s+['"](.*?)['"]\s*;?/mg, 1],
+    [/(?:^|\n|;|\s)\s*require\s*\(\s*['"](.*?)['"]\s*\)/mg, 1],
   ];
-  const deps = [];
+  const depsMap = {};
   for(const match of matches) {
     const [reg, resIndex] = match;
     let execRes;
     while(execRes = reg.exec(source)) {
-      deps.push(execRes[resIndex])
+      // console.log('execRes', execRes);
+      depsMap[execRes[resIndex]] = true;
     }
   }
-  return deps;
+  return Object.keys(depsMap);
 };
 
 export const findFile = async (files: string[]) => {
