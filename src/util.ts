@@ -122,10 +122,10 @@ export const filterModule = (module: string, modules: Set<string>) => {
 
 export const findDependenciesByAST = (source: string, jsx = false) => {
   const matches: Array<[RegExp, number]> = [
-    [/(?:^|\n|;|\s)\s*import\s+[\s\w\{\},\*\.\[\]]+\s+from\s*['"](.*?)['"]\s*;?/mg, 1],
+    [/(?:^|\n|;|\s)\s*import\s+[\s\w\$\_\{\},\*\.\[\]]+\s+from\s*['"](.*?)['"]\s*;?/mg, 1],
      [/(?:^|\n|;|\s)\s*import\s*\(\s*['"](.*?)['"]\s*\)/mg, 1],
      [/(?:^|\n|;|\s)\s*import\s*['"](.*?)['"]\s*/mg, 1],
-    [/(?:^|\n|;|\s)\s*import\s+[\w]+\s*from\s*['"](.*?)['"]\s*;?/mg, 1],
+    [/(?:^|\n|;|\s)\s*import\s+[\w\$\_]+\s*from\s*['"](.*?)['"]\s*;?/mg, 1],
     [/(?:^|\n|;|\s)\s*export\s+(?:\*|\{[^\}]+\})\s+from\s+['"](.*?)['"]\s*;?/mg, 1],
     [/(?:^|\n|;|\s)\s*require\s*\(\s*['"](.*?)['"]\s*\)/mg, 1],
   ];
