@@ -78,6 +78,7 @@ describe('/test/util.test.ts', () => {
           detective(`
       import 'modA';
       import modB, { b as modBb } from 'modB';
+      import _a, $b from 'modB2';
       import * as modC from 'modC';
       import ("modD") import('modD2')
       import { export1 , export2 as alias2 , [...] } from "modE";
@@ -88,6 +89,7 @@ describe('/test/util.test.ts', () => {
     `),
           [
             'modB',
+            'modB2',
             'modC',
             'modE',
             'modD',
