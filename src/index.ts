@@ -297,7 +297,7 @@ export class Locator {
       return existsSync(join(this.root, name));
     });
     if (!isIntegration && existsSync(join(this.root, 'midway.config.ts'))) {
-      const pkgJson: any = safeReadJSON(join(this.root, 'package.json'));
+      const pkgJson: any = await safeReadJSON(join(this.root, 'package.json'));
       isIntegration = ['react', 'vue', 'rax'].find(depName => {
         return pkgJson?.dependencies?.[depName] || pkgJson?.devDependencies?.[depName];
       });
